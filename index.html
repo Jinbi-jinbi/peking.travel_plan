@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, minimum-scale=1.0, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>北京五一深度游攻略2025 - 全平台适配版</title>
+    <link rel="stylesheet" href="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-100-M/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/tailwindcss/2.2.19/tailwind.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <style>
+        :root {
+            --primary: #2A82C8;
+            --secondary: #4CAF50;
+            --accent: #64B5F6;
+            --light-bg: #F0F9FF;
+            --primary-rgb: 42,130,200;
+        }
+
+        html {
+            font-size: 16px;
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+        }
+
+        @media (max-width: 640px) {
+            html { font-size: 14px; }
+        }
+
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background: var(--light-bg);
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .serif { font-family: 'Noto Serif SC', serif; }
+
+        .card {
+            background: rgba(255,255,255,0.95);
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-bottom: 1.5rem;
+            padding: 1.5rem;
+            transform-origin: center;
+        }
+
+        .card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 12px 24px -6px rgba(var(--primary-rgb), 0.1);
+        }
+
+        .map-container {
+            height: 50vh;
+            min-height: 300px;
+            border-radius: 1rem;
+            margin-top: 2rem;
+            box-shadow: 0 8px 20px rgba(var(--primary-rgb), 0.1);
+        }
+
+        .nav-button {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            color: white;
+            padding: 0.75rem 1.25rem;
+            border-radius: 0.5rem;
+            display: inline-flex;
+            align-items: center;
+            transition: all 0.3s ease;
+            min-width: 120px;
+            touch-action: manipulation;
+        }
+
+        .nav-button:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.2);
+        }
+
+        .footer-note {
+            color: #666;
+            font-size: 0.875rem;
+            padding: 2rem 0;
+            text-align: center;
+            border-top: 1px solid rgba(0,0,0,0.1);
+            margin-top: 3rem;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .marker-pin {
+            width: 24px;
+            height: 24px;
+            background: var(--primary);
+            border-radius: 50% 50% 50% 0;
+            position: absolute;
+            transform: rotate(-45deg);
+            left: 4px;
+            top: 4px;
+            animation: pulse 1.5s infinite;
+        }
+
+        .marker-icon {
+            position: absolute;
+            font-size: 1.2rem;
+            color: white;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+    <header class="text-center mb-8 md:mb-12">
+        <h1 class="serif text-2xl md:text-4xl font-bold text-[var(--primary)] mb-3 md:mb-4">
+            <i class="fas fa-map-marked-alt mr-2 md:mr-3"></i>
+            2025 · 北京 · 五一黄金周旅游攻略
+        </h1>
+        <div class="text-base md:text-lg">
+            <i class="fas fa-calendar-alt mr-2 text-[var(--accent)]"></i>
+            2025年4月30日 - 5月4日
+        </div>
+    </header>
+
+    <main class="space-y-4 md:space-y-6">
+        <!-- 4月30日卡片 -->
+<article class="card">
+    <div class="flex items-center mb-4">
+        <i class="fas fa-calendar-day text-2xl text-[var(--primary)] mr-3"></i>
+        <h2 class="serif text-xl font-bold text-gray-800">首日行程 · 中轴线探秘</h2>
+    </div>
+    
+    <div class="grid grid-cols-2 gap-4 mb-4">
+        <div class="col-span-2">
+            <div class="flex items-center text-sm text-gray-600">
+                <i class="fas fa-map-marker-alt mr-2 text-[var(--accent)]"></i>
+                <span class="font-medium">核心景点：</span>
+                <button onclick="handleNavigation('故宫午门')" class="nav-button ml-2">
+                    故宫午门
+                </button>
+            </div>
+        </div>
+        
+        <div class="space-y-2">
+            <div class="flex items-center">
+                <i class="fas fa-clock text-sm text-gray-500 mr-2"></i>
+                <span>开放时间：08:30-17:00</span>
+            </div>
+            <div class="flex items-center">
+                <i class="fas fa-ticket-alt text-sm text-gray-500 mr-2"></i>
+                <span>预约时段：上午场</span>
+            </div>
+        </div>
+        
+        <div class="space-y-2">
+            <div class="flex items-center">
+                <i class="fas fa-subway text-sm text-gray-500 mr-2"></i>
+                <span>地铁1号线天安门东站</span>
+            </div>
+            <div class="flex items-center">
+                <i class="fas fa-walking text-sm text-gray-500 mr-2"></i>
+                <span>步行约800米</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="border-t pt-4">
+        <p class="text-gray-700 leading-relaxed">
+            <i class="fas fa-lightbulb text-[var(--secondary)] mr-2"></i>
+            特色体验：建议早起观看升旗仪式后，沿中轴线游览端门、午门。重点参观三大殿建筑群，养心殿需单独预约。
+        </p>
+    </div>
+</article>
+
+<!-- 5月1日卡片 -->
+<article class="card">
+    <div class="flex items-center mb-4">
+        <i class="fas fa-monument text-2xl text-[var(--primary)] mr-3"></i>
+        <h2 class="serif text-xl font-bold text-gray-800">红色记忆 · 现代北京</h2>
+    </div>
+    
+    <div class="grid md:grid-cols-2 gap-4 mb-4">
+        <div class="space-y-4">
+            <div class="flex items-start">
+                <span class="text-sm bg-[var(--primary)] text-white px-2 py-1 rounded mr-2">必去</span>
+                <div>
+                    <div class="font-medium">毛主席纪念堂</div>
+                    <button onclick="handleNavigation('毛主席纪念堂')" class="nav-button mt-1">
+                        立即导航
+                    </button>
+                </div>
+            </div>
+            <div class="text-sm text-gray-600">
+                <i class="fas fa-exclamation-triangle mr-2 text-red-500"></i>
+                注意事项：需存包、禁止拍照、周一闭馆
+            </div>
+        </div>
+        
+        <div class="space-y-4">
+            <div class="flex items-start">
+                <span class="text-sm bg-[var(--secondary)] text-white px-2 py-1 rounded mr-2">推荐</span>
+                <div>
+                    <div class="font-medium">国家博物馆</div>
+                    <button onclick="handleNavigation('国家博物馆')" class="nav-button mt-1">
+                        立即预约
+                    </button>
+                </div>
+            </div>
+            <div class="text-sm text-gray-600">
+                <i class="fas fa-clock mr-2"></i>
+                建议时长：3-4小时
+            </div>
+        </div>
+    </div>
+    
+    <div class="border-t pt-4">
+        <p class="text-gray-700 leading-relaxed">
+            <i class="fas fa-utensils text-[var(--secondary)] mr-2"></i>
+            餐饮建议：前门大街老字号（全聚德、都一处）需提前2小时取号
+        </p>
+    </div>
+</article>
+
+<!-- 5月2日卡片 -->
+<article class="card">
+    <div class="flex items-center mb-4">
+        <i class="fas fa-pagoda text-2xl text-[var(--primary)] mr-3"></i>
+        <h2 class="serif text-xl font-bold text-gray-800">古都风韵 · 文化之旅</h2>
+    </div>
+    
+    <div class="flex flex-wrap gap-4 mb-4">
+        <div class="flex-1 min-w-[200px]">
+            <div class="font-medium mb-2">雍和宫</div>
+            <button onclick="handleNavigation('雍和宫')" class="nav-button w-full">
+                <i class="fas fa-hands-praying mr-2"></i>
+                祈福指南
+            </button>
+            <div class="text-sm text-gray-600 mt-2">
+                <i class="fas fa-coins mr-2"></i>
+                门票：25元（赠香）
+            </div>
+        </div>
+        
+        <div class="flex-1 min-w-[200px]">
+            <div class="font-medium mb-2">孔庙国子监</div>
+            <div class="text-sm text-gray-600">
+                <i class="fas fa-tree mr-2"></i>
+                特色：古柏林/科举展
+            </div>
+            <div class="text-sm text-gray-600 mt-2">
+                <i class="fas fa-road mr-2"></i>
+                步行距离：距雍和宫300米
+            </div>
+        </div>
+    </div>
+    
+    <div class="border-t pt-4">
+        <div class="flex items-center text-sm text-[var(--primary)]">
+            <i class="fas fa-train mr-2"></i>
+            交通提示：地铁5号线雍和宫站F口出即达
+        </div>
+    </div>
+</article>
+
+<!-- 5月3日卡片 -->
+<article class="card">
+    <div class="flex items-center mb-4">
+        <i class="fas fa-water text-2xl text-[var(--primary)] mr-3"></i>
+        <h2 class="serif text-xl font-bold text-gray-800">水系漫步 · 皇家园林</h2>
+    </div>
+    
+    <div class="grid md:grid-cols-3 gap-4 mb-4">
+        <div class="text-center">
+            <div class="text-lg font-bold text-[var(--primary)]">上午</div>
+            <div class="text-sm">颐和园东宫门入</div>
+            <div class="text-xs text-gray-500 mt-1">建议时长3小时</div>
+        </div>
+        
+        <div class="text-center">
+            <div class="text-lg font-bold text-[var(--secondary)]">中午</div>
+            <div class="text-sm">西苑美食街</div>
+            <div class="text-xs text-gray-500 mt-1">推荐小吊梨汤</div>
+        </div>
+        
+        <div class="text-center">
+            <div class="text-lg font-bold text-[var(--accent)]">下午</div>
+            <div class="text-sm">圆明园遗址</div>
+            <div class="text-xs text-gray-500 mt-1">西洋楼景区</div>
+        </div>
+    </div>
+    
+    <div class="border-t pt-4">
+        <div class="alert bg-[var(--light-bg)] p-3 rounded-lg">
+            <i class="fas fa-exclamation-circle text-[var(--primary)] mr-2"></i>
+            特别提醒：园区较大建议乘坐电瓶车，穿舒适运动鞋
+        </div>
+    </div>
+</article>
+
+<!-- 5月4日卡片 -->
+<article class="card">
+    <div class="flex items-center mb-4">
+        <i class="fas fa-shopping-bag text-2xl text-[var(--primary)] mr-3"></i>
+        <h2 class="serif text-xl font-bold text-gray-800">都市脉搏 · 现代北京</h2>
+    </div>
+    
+    <div class="flex flex-col md:flex-row gap-4 mb-4">
+        <div class="flex-1">
+            <div class="font-medium mb-2">CBD核心区</div>
+            <div class="text-sm text-gray-600">
+                <i class="fas fa-building mr-2"></i>
+                推荐点位：国贸三期观景台
+            </div>
+            <div class="text-sm text-gray-600 mt-2">
+                <i class="fas fa-camera mr-2"></i>
+                最佳拍摄时间：日落前1小时
+            </div>
+        </div>
+        
+        <div class="flex-1">
+            <div class="font-medium mb-2">三里屯太古里</div>
+            <div class="text-sm text-gray-600">
+                <i class="fas fa-store mr-2"></i>
+                特色店铺：Harmay话梅
+            </div>
+            <div class="text-sm text-gray-600 mt-2">
+                <i class="fas fa-mug-hot mr-2"></i>
+                网红咖啡：% Arabica
+            </div>
+        </div>
+    </div>
+    
+    <div class="border-t pt-4">
+        <div class="flex items-center justify-between text-sm">
+            <div class="text-[var(--primary)]">
+                <i class="fas fa-subway mr-2"></i>
+                地铁10号线金台夕照站
+            </div>
+            <button class="nav-button">
+                <i class="fas fa-route mr-2"></i>
+                查看路线
+            </button>
+        </div>
+    </div>
+</article>
+
+    </main>
+
+    <div id="amap-container" class="map-container"></div>
+
+    <div class="footer-note">
+        <i class="fas fa-info-circle mr-2"></i>
+        该网页由DeepSeek结合Excel版本攻略制作，内容可能有出入，请以Excel版本为主
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // 初始化地图
+        const map = L.map('amap-container', {
+            center: [39.904989, 116.405285],
+            zoom: 12,
+            gestureHandling: true
+        });
+
+        // 添加高德地图图层
+        L.tileLayer('https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}', {
+            subdomains: ['1', '2', '3', '4'],
+            attribution: '© 高德地图'
+        }).addTo(map);
+
+        // 添加标记点
+        const locations = {
+            '故宫午门': [39.917241, 116.397389],
+            '毛主席纪念堂': [39.902845, 116.398162],
+            '国家博物馆': [39.904556, 116.401157],
+            '雍和宫': [39.949491, 116.417209]
+        };
+
+        Object.entries(locations).forEach(([name, coord]) => {
+            const marker = L.marker(coord, {
+                icon: L.divIcon({
+                    html: `
+                        <div class="marker-pin"></div>
+                        <i class="fas fa-map-marker-alt marker-icon"></i>
+                        <div class="absolute top-full mt-1 text-sm font-bold text-[var(--primary)]">${name}</div>
+                    `,
+                    iconSize: [40, 40],
+                    className: 'marker-container'
+                })
+            }).addTo(map)
+            .bindPopup(`${name} <button onclick="handleNavigation('${name}')" class="nav-button mt-2">导航前往</button>`);
+        });
+
+        // 导航功能
+        function handleNavigation(name) {
+            const coord = locations[name];
+            if (!coord) return;
+
+            const scheme = {
+                ios: `iosamap://navi?sourceApplication=北京旅游&poiname=${name}&lat=${coord[0]}&lon=${coord[1]}`,
+                android: `androidamap://navi?sourceApplication=北京旅游&poiname=${name}&lat=${coord[0]}&lon=${coord[1]}`,
+                web: `https://uri.amap.com/navigation?to=${coord[1]},${coord[0]},${name}`
+            };
+
+            try {
+                if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                    location.href = scheme.ios;
+                } else if (/Android/i.test(navigator.userAgent)) {
+                    location.href = scheme.android;
+                } else {
+                    window.open(scheme.web, '_blank');
+                }
+            } catch (e) {
+                window.open(scheme.web, '_blank');
+            }
+        }
+    </script>
+</body>
+</html>
